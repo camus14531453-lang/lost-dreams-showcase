@@ -1,0 +1,130 @@
+/* Claude polish layer (2026-10-12). Remove this <link> + claude-polish.js to revert.
+   Scenery only; gameplay screenshots are never filtered. */
+
+:root{
+  --wall-hi:#3a6aa8; --wall:#1f4580; --wall-lo:#0d2346;
+  --ink:#efe8d8; --ink-soft:#c9d5e4; --amber:#f2c98a; --line:#e9dcc140;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ---------- materials: crisp, no posterize/blur ---------- */
+.desk{filter:brightness(.8) contrast(1.06) saturate(.8) drop-shadow(26px 32px 16px #06142c99)!important;image-rendering:auto!important}
+.computer>img{filter:brightness(.9) contrast(1.05)!important;image-rendering:auto!important}
+.award.scattered,.award{filter:brightness(.82) saturate(.8) drop-shadow(6px 10px 6px #06132a99)!important}
+.landscape:before{filter:blur(10px) brightness(.5) saturate(.7)!important}
+
+/* ---------- wall: wallpaper weave + vignette + falling night ---------- */
+.page{background:
+  radial-gradient(ellipse 1100px 1400px at 50% 1250px,var(--wall-hi) 0%,transparent 70%),
+  linear-gradient(var(--wall) 0%,var(--wall) 40%,var(--wall-lo) 100%)!important}
+.bodyarea:before{background:
+  repeating-linear-gradient(90deg,#ffffff05 0 2px,transparent 2px 28px),
+  repeating-linear-gradient(0deg,#00000008 0 1px,transparent 1px 3px),
+  linear-gradient(90deg,#040d2088,transparent 20%,transparent 80%,#040d2088),
+  linear-gradient(#020a1e90,transparent 260px)!important}
+/* scroll-driven dusk: wall darkens as you descend toward the floor */
+.bodyarea:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:1!important;filter:none!important;
+  background:linear-gradient(transparent 0%,#030a1c calc(100% - 200px),#030a1c 100%);
+  mask-image:linear-gradient(transparent,#000);opacity:calc(.15 + var(--dusk,0)*.55)!important}
+
+/* monitor spill on the wall right under the table */
+.hero:after{content:"";position:absolute;left:50%;top:calc(980px + var(--scene-offset));width:1300px;height:520px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 0,#9cc8ff1f,transparent 65%);pointer-events:none;z-index:1}
+
+/* pointer torch: a soft circle of light that follows the cursor across the wall */
+.torch{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .6s var(--ease);
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),#ffe7b81a,#ffe7b808 40%,transparent 70%);mix-blend-mode:screen}
+.torch.on{opacity:1}
+@media (hover:none),(prefers-reduced-motion:reduce){.torch{display:none}}
+
+/* ---------- typography: readable long-form, handwriting only for short lines ---------- */
+.paper{padding:64px 64px 36px!important}
+.paper h2{font:700 38px/1.35 DeskSong,serif!important;letter-spacing:3px;margin-bottom:34px!important;color:#fff6e4}
+.paper h2:after{content:"";display:block;width:56px;height:2px;margin-top:22px;background:var(--amber);opacity:.75}
+.paper p{font:400 21px/2.05 DeskSong,serif!important;letter-spacing:.6px;color:var(--ink);text-wrap:pretty}
+.paper p:first-of-type{font-size:23px!important;color:#fff8ea}
+.table-quote{letter-spacing:2px}
+.table-quote span{letter-spacing:1px;opacity:.92}
+
+/* ---------- media: framed, lit, crossfading ---------- */
+.shot-gallery,.motion-panel{width:800px!important;margin-top:30px!important}
+.shot-open,.motion-panel img{border-radius:3px;box-shadow:0 0 0 1px #ffffff14,0 18px 40px #030b1f99,0 2px 6px #030b1f80!important;overflow:hidden;position:relative}
+.shot-open{background:#06101f!important}
+.shot-open img{transition:opacity .35s var(--ease),transform .9s var(--ease)}
+.shot-open img.swap{opacity:0}
+.shot-open:hover img{transform:scale(1.015)}
+.shot-open:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(160deg,#ffffff0d,transparent 35%)}
+.gallery-caption{border-bottom:1px solid var(--line);padding-bottom:12px}
+.gallery-navigation button{width:44px;height:44px;border-radius:50%!important;transition:background .2s,color .2s,transform .2s var(--ease)!important}
+.gallery-navigation button:hover{background:#ffffff14!important;transform:none!important}
+.gallery-dots{display:flex;gap:6px;align-items:center;margin-right:6px}
+.gallery-dots button{width:18px;height:4px;padding:0;border:0;border-radius:2px;background:#ffffff2a;cursor:pointer;transition:background .25s,width .25s var(--ease)}
+.gallery-dots button[aria-current="true"]{background:var(--amber);width:30px}
+.gallery-dots button:hover{background:#ffffff66}
+.shot-description{margin-top:10px!important;color:var(--ink-soft)!important}
+.lightbox{border-radius:6px}
+.lightbox img{transition:opacity .25s}
+
+/* ---------- reveal on scroll ---------- */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* ---------- screen power-on ---------- */
+.screen.boot iframe{animation:crt-on 1.1s var(--ease) both}
+.screen.boot:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#dff1ff;animation:crt-flash 1.1s ease-out both}
+@keyframes crt-on{0%{transform:scale(var(--fit)) scaleY(.004) scaleX(.6);filter:brightness(4)}35%{transform:scale(var(--fit)) scaleY(.02) scaleX(1);filter:brightness(3)}70%{filter:brightness(1.3)}100%{transform:scale(var(--fit));filter:none}}
+@keyframes crt-flash{0%{opacity:.9}40%{opacity:.25}100%{opacity:0}}
+.screen{transition:box-shadow .6s var(--ease)}
+.computer:hover .screen{box-shadow:0 0 26px 9px #b4dfff5c,0 0 110px 36px #79afff3a!important}
+
+/* ---------- floor: real perspective, smooth planks, lamp pool ---------- */
+.floor{overflow:hidden;background:#2a1c11!important;min-height:1500px!important}
+.floor:before{background:url('asset_10_floor_tile.jpg') center top/300px 300px repeat!important;
+  transform:perspective(1200px) rotateX(55deg) scale(1.9,1.7)!important;transform-origin:50% 0!important;inset:0 -10% -40% -10%!important;image-rendering:auto!important;filter:brightness(.66) saturate(.85) contrast(1.05)}
+.floor:after{background:
+  linear-gradient(#030a1c 0%,#030a1c00 140px),
+  radial-gradient(ellipse 820px 520px at 50% 520px,#ffcf8a2e,transparent 70%),
+  radial-gradient(ellipse 1400px 900px at 50% 600px,transparent 30%,#0d0805cc 100%)!important}
+.floor-content{transform:none!important}
+.floor .download-area h2{font-size:38px!important;letter-spacing:4px;color:#fff3dc}
+.download{position:relative;display:inline-flex!important;align-items:center;gap:10px;margin:26px 10px 0!important;padding:14px 28px!important;
+  border:1px solid #f2deaf8c!important;border-radius:2px;background:#1a110acc!important;color:#fff3dc!important;text-decoration:none;cursor:pointer!important;
+  font:400 20px DeskSong,serif!important;letter-spacing:2px;transition:background .25s,border-color .25s,transform .25s var(--ease),box-shadow .25s}
+.download:hover{background:#f2c98a!important;color:#1a110a!important;border-color:#f2c98a!important;transform:translateY(-2px);box-shadow:0 10px 24px #00000066}
+.download:before{content:"↓";font-family:system-ui;font-size:16px}
+.project-notes{margin-top:70px;padding:44px 52px!important;background:#120c07b8!important;border:1px solid #f2deaf26!important;border-radius:3px;backdrop-filter:blur(3px)}
+.project-notes h3{color:var(--amber)!important;border-top:1px solid #f2deaf1f;padding-top:26px;margin-top:30px!important}
+.project-notes h3:first-of-type{border-top:0;padding-top:0}
+.project-notes dl{row-gap:12px!important}
+.page:after{content:"";display:block;height:0}
+
+/* props drift with scroll (individual translate keeps their rotate) */
+.award.scattered,.memory-prop{translate:0 calc(var(--drift,0) * 1px)}
+
+@media(max-width:800px){
+  .paper{padding:44px 6px 20px!important}
+  .paper h2{font-size:28px!important}
+  .paper p{font-size:18px!important;line-height:1.95!important}
+  .paper p:first-of-type{font-size:19px!important}
+  .shot-gallery,.motion-panel{margin-top:44px!important}
+  .floor{min-height:0!important}
+  .floor:before{transform:perspective(700px) rotateX(45deg) scale(2.6,2)!important}
+  .project-notes{padding:24px 20px!important}
+  .download{margin:16px 4px 0!important;font-size:17px!important}
+}
+.gallery-navigation .gallery-dots button{width:18px!important;height:4px!important;min-width:0!important;min-height:0!important;border-radius:2px!important;font-size:0!important}
+.gallery-navigation .gallery-dots button[aria-current="true"]{width:30px!important;background:var(--amber)!important}
+.gallery-navigation .gallery-dots button:hover{background:#ffffff66!important;transform:none!important}
+.floor{perspective:none!important}
+.floor-content{position:relative;z-index:2}
+.download-area{padding-top:30px}
+/* legs must stand on the floor, not be cut by it */
+.hero{z-index:2}
+.floor:before{z-index:-2}
+.floor{isolation:isolate}
+/* flat, pre-rendered perspective floor (CSS 3D plane was painting over content) */
+.floor:before{background:url('asset_11_floor_perspective.jpg') center top/2560px 1800px no-repeat,#1c120a!important;transform:none!important;inset:0!important;filter:none!important}
+@media(max-width:800px){.floor:before{background-size:1600px 1125px!important}}
+@media(max-width:800px){.hero{z-index:auto}}
+@media(max-width:800px){.floor{z-index:3}}

@@ -1,0 +1,10 @@
+/* Material pass: scenery only, never text or gameplay images. */
+.page{background:radial-gradient(ellipse 800px 1800px at 40% 1800px,#365f91 0%,#254c7c 45%,#102845 100%)}
+.bodyarea:before{background:linear-gradient(90deg,#081a3255,transparent 22%,transparent 78%,#081a3266),linear-gradient(#020d2877,transparent 190px),repeating-linear-gradient(0deg,#b8c9d803 0 2px,#06152706 2px 4px);}
+.bodyarea:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.10;filter:url(#wall-grain);background:linear-gradient(108deg,transparent 10%,#9db9d022 32%,transparent 46%,#070e2033 72%)}
+.desk{filter:url(#scene-colour) brightness(.82) contrast(1.13) saturate(.72) drop-shadow(22px 28px 13px #07172b8a);image-rendering:pixelated}
+.computer>img{filter:url(#scene-colour) brightness(.84) contrast(1.08);image-rendering:pixelated}
+.computer:after{inset:5% 1% 0;background:radial-gradient(ellipse at 50% 34%,#a5d5ff30,transparent 60%),radial-gradient(ellipse 40% 5% at 50% 97%,#badcfb50,transparent 90%);filter:blur(14px)}
+.screen:after{background:repeating-linear-gradient(0deg,#0a19300a 0 1px,transparent 1px 4px),linear-gradient(115deg,#e4f2ff16,transparent 40%);box-shadow:inset 0 0 15px 4px #071326a0}
+.landscape:before{filter:blur(7px) brightness(.57) saturate(.65) url(#scene-colour)}
+.floor:before{background:linear-gradient(#07162bc9 0%,#18264050 15%,#20170e73 75%,#171512a8),url('asset_2_floor_plank_0.png') center top/240px 480px repeat;background-color:#584534;transform:perspective(1400px) rotateX(15deg) scale(1.18);transform-origin:center top;image-rendering:pixelated}
